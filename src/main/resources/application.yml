@@ -1,0 +1,31 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: endorphins
+  kafka:
+    bootstrap-servers: node20,node21,node22
+    producer:
+      retries: 3 # 设置大于0，client 将会发送失败的记录重新发送
+      batch-size: 16384
+      buffer-memory: 33554432
+      acks: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: default-group
+      enable-auto-commit: false
+      auto-offset-reset: earliest # 从头开始消费
+      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      max-poll-records: 500
+    listener:
+      # MANUAL：一批 records 被消费之后，再提交
+      # MANUAL_IMMEDIATE：一批 records 被消费之后，再提交
+      # COUNT_TIME：TIME|COUNT 有一个条件满足时提交
+      # TIME：一批 records 被消费之后，被处理的record数量 >= COUNT 时提交
+      # BATCH：一批 records 被消费之后，距离上次提交时间大于TIME时提交
+      # RECORD：每一条 record 被处理之后提交
+      ack-mode: MANUAL_IMMEDIATE
+      ack-count:
+      ack-time:
